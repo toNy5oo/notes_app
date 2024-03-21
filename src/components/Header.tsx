@@ -1,5 +1,4 @@
 import { INotes } from '@/interface/notes_interface';
-import { Button } from './ui/button'
 import { NoteForm } from './NoteForm';
 
 interface Props {
@@ -9,18 +8,13 @@ interface Props {
 
 export default function Header({notes, setNotes}: Props) {
 
-    function createNewNote () {
-        const newNote = {
-            title: "New Note",
-            body: "This is a new note"
-        }
+    function createNewNote (newNote: INote) {
         setNotes([...notes, newNote])
     }
 
   return (
     <div className="flex justify-between mb-4 p-4 border-b-2">
-        <NoteForm />
-        {/* <Button variant="destructive" onClick={createNewNote}>New Note</Button> */}
+        <NoteForm createNewNote={createNewNote}/>
     </div>
   )
 }
