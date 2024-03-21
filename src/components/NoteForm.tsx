@@ -1,15 +1,18 @@
-import { Button } from "@/components/ui/button"
-
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover"
 import { Input } from "./ui/input"
-import { Label } from "./ui/label"
 import { Textarea } from "./ui/textarea"
+import { useState } from "react"
+import { INote } from "@/interface/notes_interface"
+import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
+import { Label } from "./ui/label";
+import { Button } from "./ui/button";
 
-export function NoteForm() {
+interface Props {
+  createNewNote: React.Dispatch<React.SetStateAction<INote>>;
+}
+
+export function NoteForm({createNewNote}: Props): JSX.Element {
+  const [note, setNote] = useState<INote>({} as INote)
+
   return (
     <Popover>
       <PopoverTrigger>
@@ -29,6 +32,8 @@ export function NoteForm() {
               <Input
                 id="note_title"
                 className="col-span-2 h-8"
+                onChange={(e) => {
+                  setNote({...note, title: e.target.value})}} 
               />
             </div>
             <div className="grid grid-cols-3 items-center gap-4">
@@ -37,10 +42,12 @@ export function NoteForm() {
               id="note_description" 
               maxLength={300}
               placeholder="Type here..." 
-              className="col-span-2 h-8"/>
+              className="col-span-2 h-8"
+              onChange={(e) => {
+                setNote({...note, description: e.target.value})}}/>
             </div>
           </div>
-          <Button variant="destructive">Create</Button>
+          <Button variant="destructive" onClick={() => createNewNote(note)}>Create</Button>
         </div>
       </PopoverContent>
     </Popover>
