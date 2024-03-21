@@ -12,13 +12,12 @@ export default function Notes({note}: Props) {
     <Card className="w-[350px]">
       <CardHeader>
         <CardTitle>{note.title}</CardTitle>
-        {/* <CardDescription></CardDescription> */}
       </CardHeader>
       <CardContent>
       {note.description}
       </CardContent>
       <CardFooter className="flex justify-between">
-        <Button variant="outline" >Edit</Button>
+        <Button variant="outline">Edit</Button>
         <Button>Delete</Button>
       </CardFooter>
     </Card>
