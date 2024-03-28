@@ -35,7 +35,7 @@ export default function Header({notes, setNotes, toggleLayout, layout}: Props) {
         <NoteForm createNewNote={createNewNote}/>
         <Button variant="outline" size="icon" onClick={(e) => toggleLayout(e)}>
       { 
-      layout === 'card' ? (<CardIcon className="h-4 w-4" />) : (<ListIcon className="h-4 w-4" />)
+      layout === 'card' ? (<ListIcon className="h-4 w-4" />) : (<CardIcon className="h-4 w-4" />)
     }
     </Button>
     
