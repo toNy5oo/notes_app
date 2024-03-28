@@ -4,7 +4,7 @@ import {  Card, CardContent, CardFooter, CardHeader, CardTitle } from "./ui/card
 
 interface Props {
     note: INote;
-    deleteNote: (id: number) => void;
+    deleteNote: (string: number) => void;
   }
 
 export default function CardItem({note, deleteNote}: Props) {

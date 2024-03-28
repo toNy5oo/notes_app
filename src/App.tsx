@@ -11,7 +11,7 @@ function App() {
   
   const [notes, setNotes] = useState<INote[]>(notes_array);
   
-  function deleteNote(id: number): void {
+  function deleteNote(id: string): void {
     const filteredArray = notes.filter((note) => (note.id!== id));
     setNotes(filteredArray);
   }
