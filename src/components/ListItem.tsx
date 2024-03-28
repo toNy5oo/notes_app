@@ -1,5 +1,6 @@
 import { INote } from "@/interface/notes_interface";
 import { Button } from "./ui/button";
+import { DeleteBin } from "./ui/icones";
 
 interface Props {
     note: INote;
@@ -18,7 +19,7 @@ export default function ListItem({note, deleteNote}: Props) {
         </p>
         </div>
         <div>
-        <Button onClick={() => deleteNote(note.id)}>Delete</Button>
+        <Button variant="ghost" onClick={() => deleteNote(note.id)}><DeleteBin className="text-lg text-red-600"/></Button>
         </div>
     </section>
   )
