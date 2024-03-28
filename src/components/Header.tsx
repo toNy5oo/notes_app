@@ -18,6 +18,8 @@ export default function Header({notes, setNotes, toggleLayout, layout}: Props) {
   const { toast } = useToast()
 
     function createNewNote (newNote: INote) {
+        const newId = Math.random().toString()
+        newNote = {...newNote, id: newId}
         setNotes([...notes, newNote])
         showToast(newNote.title);
     }
