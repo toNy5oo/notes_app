@@ -5,6 +5,7 @@ import { Button } from './ui/button';
 import { CardIcon, ListIcon } from './ui/icones';
 import { useToast } from "@/components/ui/use-toast"
 import { Toaster } from "./ui/toaster";
+import { ROUTES } from '@/const/routes';
 
 interface Props {
   notes: INotes;
@@ -15,13 +16,31 @@ interface Props {
 
 export default function Header({notes, setNotes, toggleLayout, layout}: Props) {
 
+  async function createNote(note: INote): Promise<INote>{
+    const response = await fetch(ROUTES.CREATE,{
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json', 
+    },
+      body: JSON.stringify(note),
+    });
+    const result = await response.json();
+    console.log(result);
+    return result;
+  }
+
   const { toast } = useToast()
 
-    function createNewNote (newNote: INote) {
+  //TODO: Improve performance and clean up
+    async function createNewNote (newNote: INote) {
         const newId = Math.random().toString()
         newNote = {...newNote, id: newId}
+        const result = await createNote(newNote);
+
+        if (result) {
         setNotes([...notes, newNote])
         showToast(newNote.title);
+        }
     }
 
     function showToast(noteTitle: string) {
