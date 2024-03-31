@@ -4,7 +4,7 @@ import { DeleteBin } from "./ui/icones";
 
 interface Props {
     note: INote;
-    deleteNote: (id: number) => void;
+    deleteNote: (id: string) => string;
   }
 
 export default function ListItem({note, deleteNote}: Props) {

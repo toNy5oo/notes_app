@@ -6,7 +6,7 @@ import '../App.css'
 
 interface Props {
     note: INote;
-    deleteNote: (id: number) => void;
+    deleteNote: (id: string) => void;
     layout: string;
   }
 
