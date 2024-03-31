@@ -15,7 +15,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog"
 import { AddCircleRounded } from "./ui/icones";
-
+import { CirclePicker, ColorResult } from "react-color";
 
 
 interface Props {
@@ -63,6 +63,17 @@ export function NoteForm({createNewNote}: Props): JSX.Element {
             className="col-span-2 h-8"
             onChange={(e) => {
               setNote({...note, description: e.target.value})}}/>
+          </div>
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="note_color" className="text-right">
+              Color
+            </Label>
+            <CirclePicker 
+            colors={[ '#F47373',  '#37D67A', '#2CCCE4', '#dce775', '#ff8a65']}
+            circleSize={24}
+            onChange={(selectedColor, _) => {
+              setNote({...note, color: selectedColor.hex})}}
+            />
           </div>
         </div>
         <DialogFooter>

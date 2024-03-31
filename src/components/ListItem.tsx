@@ -9,7 +9,7 @@ interface Props {
 
 export default function ListItem({note, deleteNote}: Props) {
   return (
-    <section className="border rounded-md bg-slate-50 flex justify-between p-4">
+      <section className={`border rounded-md border-[${note.color}] flex justify-between p-4`}>
         <div>
         <p className="font-semibold text-xl text-start">
         {note.title}
