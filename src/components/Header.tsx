@@ -1,11 +1,11 @@
-import { INote, INotes } from '@/interface/notes_interface';
-import { NoteForm } from './NoteForm';
-import { LAYOUT } from '@/const/enums';
-import { Button } from './ui/button';
-import { CardIcon, ListIcon } from './ui/icones';
-import { useToast } from "@/components/ui/use-toast"
+import { INote, INotes } from "@/interface/notes_interface";
+import { NoteForm } from "./NoteFormDialog";
+import { LAYOUT } from "@/const/enums";
+import { Button } from "./ui/button";
+import { CardIcon, ListIcon } from "./ui/icones";
+import { useToast } from "@/components/ui/use-toast";
 import { Toaster } from "./ui/toaster";
-import { ROUTES } from '@/const/routes';
+import { ROUTES } from "@/const/routes";
 
 interface Props {
   notes: INotes;
@@ -14,14 +14,18 @@ interface Props {
   layout: string;
 }
 
-export default function Header({notes, setNotes, toggleLayout, layout}: Props) {
-
-  async function createNote(note: INote): Promise<INote>{
-    const response = await fetch(ROUTES.CREATE,{
-      method: 'POST',
+export default function Header({
+  notes,
+  setNotes,
+  toggleLayout,
+  layout,
+}: Props) {
+  async function createNote(note: INote): Promise<INote> {
+    const response = await fetch(ROUTES.CREATE, {
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json', 
-    },
+        "Content-Type": "application/json",
+      },
       body: JSON.stringify(note),
     });
     const result = await response.json();
@@ -29,39 +33,40 @@ export default function Header({notes, setNotes, toggleLayout, layout}: Props) {
     return result;
   }
 
-  const { toast } = useToast()
+  const { toast } = useToast();
 
   //TODO: Improve performance and clean up
-    async function createNewNote (newNote: INote) {
-        const newId = Math.random().toString()
-        newNote = {...newNote, id: newId}
-        const result = await createNote(newNote);
+  async function createNewNote(newNote: INote) {
+    const newId = Math.random().toString();
+    newNote = { ...newNote, id: newId };
+    const result = await createNote(newNote);
 
-        if (result) {
-        setNotes([...notes, newNote])
-        showToast(newNote.title);
-        }
+    if (result) {
+      setNotes([...notes, newNote]);
+      showToast(newNote.title);
     }
+  }
 
-    function showToast(noteTitle: string) {
-      toast({
-        title: "Created",
-        description: "Your new note "+noteTitle+" has been added.",
-      })
-    }
+  function showToast(noteTitle: string) {
+    toast({
+      title: "Created",
+      description: "Your new note " + noteTitle + " has been added.",
+    });
+  }
 
   return (
     <>
-    <div className="flex justify-between mb-4 p-4 border-b-2">
-        <NoteForm createNewNote={createNewNote}/>
+      <div className="flex justify-between mb-4 p-4 border-b-2">
+        <NoteForm createNewNote={createNewNote} />
         <Button variant="outline" size="icon" onClick={(e) => toggleLayout(e)}>
-      { 
-      layout === 'card' ? (<ListIcon className="h-4 w-4" />) : (<CardIcon className="h-4 w-4" />)
-    }
-    </Button>
-    
-    </div>
-    <Toaster />
+          {layout === "card" ? (
+            <ListIcon className="h-4 w-4" />
+          ) : (
+            <CardIcon className="h-4 w-4" />
+          )}
+        </Button>
+      </div>
+      <Toaster />
     </>
-  )
+  );
 }
