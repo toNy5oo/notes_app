@@ -1,12 +1,6 @@
 #root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
-}
-
-.card {
-  padding: 2em;
+  height: 100vh;
+  background-color: whitesmoke;
 }
 
 .fade-enter {
@@ -22,4 +16,44 @@
 .fade-exit-active {
   opacity: 0.01;
   transition: opacity 300ms ease-in;
+}
+
+@keyframes slidein {
+  from {
+    transform: translateX(-80%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes fadein {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideAndFadeFromLeft {
+  from {
+    transform: translateX(-5px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0px);
+    opacity: 1;
+  }
+}
+
+@keyframes slideAndFadeFromTop {
+  from {
+    transform: translateY(-5px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0px);
+    opacity: 1;
+  }
 }
