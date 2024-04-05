@@ -47,7 +47,7 @@ export function NoteContent({ note, isCard = false, deleteNote, togglePin }: Pro
        >
       
         <section className="truncate" onClick={openNoteDialog}> 
-          <div className="font-semibold text-md flex justify-between items-center">
+            note.isPinned 
             {note.title}
           </div>
           <p className="text-xs truncate">{note.description}</p>
