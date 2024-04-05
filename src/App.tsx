@@ -7,6 +7,7 @@ import { DELETE_RESPONSE, TOGGLE_RESPONSE } from "./const/enums";
 import { useToast } from "@/components/ui/use-toast";
 import { Toaster } from "./components/ui/toaster";
 import { NoteContent } from "./components/NoteContent";
+import Loading from "./components/Loading";
 
 const cardClasses = `pb-3 pt-2 p-3 rounded-md flex-wrap gap-4`
 const listClasses = `flex-col rounded-md justify-between gap-2`
@@ -80,7 +81,7 @@ function App() {
   }
 
   if (loading) {
-    return <Loading />; // Your loading component
+    return <Loading />; 
   }
 
   return (
@@ -93,7 +94,8 @@ function App() {
       />
       
       <div
-        className={`flex justify-around items-center ${layout === "list" ? listClasses : cardClasses}`} 
+        // className={`flex justify-around items-center ${layout === "list" ? listClasses : cardClasses}`} 
+        className={`flex justify-evenly gap-2 ${layout === "list" ? "flex-col" : ""}`}
       >
         {notes.map((note) => (
           <NoteContent
@@ -110,7 +112,4 @@ function App() {
   );
 }
 
-function Loading() {
-  return <h2 className="animate-ping">🌀 Please have patience while the API server spins up...</h2>;
-}
 export default App;
