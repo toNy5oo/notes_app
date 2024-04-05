@@ -47,8 +47,10 @@ export function NoteContent({ note, isCard = false, deleteNote, togglePin }: Pro
        >
       
         <section className="truncate" onClick={openNoteDialog}> 
+            {/* {isHover && (
             note.isPinned 
-            {note.title}
+            ? <Pin {...pinStyle} onClick={() => togglePin(note.id)}/>
+            : <PinOff {...pinStyle} onClick={() => togglePin(note.id)}/>
           </div>
           <p className="text-xs truncate">{note.description}</p>
         </div>
