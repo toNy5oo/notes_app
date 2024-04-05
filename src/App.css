@@ -57,3 +57,14 @@
     opacity: 1;
   }
 }
+
+@keyframes slideAndFadeFromBottom {
+  from {
+    transform: translateY(5px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0px);
+    opacity: 1;
+  }
+}
