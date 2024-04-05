@@ -51,8 +51,9 @@ export function NoteContent({ note, isCard = false, deleteNote, togglePin }: Pro
             {note.title}
           </div>
           <p className="text-xs truncate">{note.description}</p>
-        </section>
-        
+        </div>
+
+        {isHover && (<NoteActions note={note} setIsDeleting={setIsDeleting} deleteNote={deleteNote} togglePin={togglePin} />)}
       </div>
      
       {isHover && (<div className={` ${isCard ? cardClassesIcons : listClassesIcons}`}>
