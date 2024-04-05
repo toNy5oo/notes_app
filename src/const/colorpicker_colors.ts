@@ -17,7 +17,6 @@ export const colors: string[] = [
 
 export function parseColor(color: string) {
   color = color.toLowerCase();
-  console.log(color)
   switch (color) {
     case noteColors.RED.toLowerCase():
       return "noteRed";
