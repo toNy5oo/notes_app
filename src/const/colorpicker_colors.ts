@@ -8,6 +8,7 @@ export const enum noteColors {
 }
 
 export const colors: string[] = [
+  noteColors.GREY,
   noteColors.RED,
   noteColors.BLUE,
   noteColors.GREEN,
