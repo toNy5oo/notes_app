@@ -91,7 +91,7 @@ module.exports = {
         slidein: 'slidein 0.2s ease-out',
         fadein: 'fadein 0.4s ease-in-out',
         slideAndFadeFromTop: 'slideAndFadeFromTop 0.2s ease-in-out',
-        slideAndFadeFromBottom: 'slideAndFadeFromTop 0.2s ease-in-out',
+        slideAndFadeFromBottom: 'slideAndFadeFromBottom 0.2s ease-in-out',
         slideAndFadeFromLeft: 'slideAndFadeFromLeft 0.2s ease-in-out',
       },
     },
