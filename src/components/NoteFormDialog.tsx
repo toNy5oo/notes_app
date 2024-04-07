@@ -19,11 +19,13 @@ import { CirclePicker } from "react-color";
 import { colors } from "@/const/colorpicker_colors";
 
 interface Props {
-  createNewNote: React.Dispatch<React.SetStateAction<INote>>;
+  createNewNote: (note: INote) => void;
 }
 
 export function NoteForm({ createNewNote }: Props): JSX.Element {
+  
   const [note, setNote] = useState<INote>({} as INote);
+  const [selectedColor, setSelectedColor] = useState(colors[0])
 
   return (
     <>
@@ -74,11 +76,15 @@ export function NoteForm({ createNewNote }: Props): JSX.Element {
                 Color
               </Label>
               <CirclePicker
+              color={selectedColor}
                 colors={colors}
-                circleSpacing={24}
+                circleSpacing={18}
                 circleSize={24}
                 onChange={(selectedColor, _) => {
                   setNote({ ...note, color: selectedColor.hex });
+                }}
+                onChangeComplete={(selectedColor, _) => {
+                  setSelectedColor(selectedColor.hex);
                 }}
               />
             </div>

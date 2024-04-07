@@ -1,68 +1,86 @@
 import { parseColor } from "@/const/colorpicker_colors";
 import { INote } from "@/interface/notes_interface";
 import { NoteDialog } from "./NoteDialog";
-import { useState } from "react";
-import NoteActions from "./NoteActions";
-import { Pin, PinOff } from "lucide-react";
-import { pinStyle } from "@/const/styles";
+import { useEffect, useState } from "react";
+import { NoteActions } from "./NoteActions";
+import { LoaderCircle, Pin, PinOff } from "lucide-react";
+import { cardStyles, listStyles, pinStyle, spinnerProps } from "@/const/styles";
+import useSWRMutation from "swr/mutation";
+import { ROUTES } from "@/const/routes";
 import { useNotes } from "./NoteContext";
 
 interface Props {
   note: INote;
   isCard?: boolean;
-  deleteNote: (noteId: string) => void;
-  togglePin: (noteId: string) => void;
 }
 
-export function NoteContent({ note, isCard = false, deleteNote, togglePin }: Props) {
+async function togglePin(url: string, { arg }: { arg: string}) {
+  return fetch(url+arg, {
+    method: 'PUT',
+    body: JSON.stringify(arg),
+    headers: {
+      "Content-Type": "application/json",
+    },
+  }).then(res => res.json())
+}
+
+export function NoteContent({  note, isCard = false }: Props) {
+
   const { setNotes } = useNotes()
+
+  const {
+    trigger: togglePinTrigger, data, isMutating  } = useSWRMutation(ROUTES.TOGGLE_PIN, togglePin, /* options */)
+
   const [isHover, setIsHover] = useState(false);
   const [isAlertDialogOpen, setIsAlertDialogOpen] = useState(false);
-  const [isDeleting, setIsDeleting] = useState(false);
 
-  const openNoteDialog = () => setIsAlertDialogOpen(true);
+  // const openNoteDialog = () => setIsAlertDialogOpen(true);
   const closeNoteDialog = () => {
     setIsAlertDialogOpen(false);
     setIsHover(false);
   };
 
-  const showNoteDetails = () => {
-    deleteNote(note.id);
-    closeNoteDialog();
-  };
-
+  useEffect(() => {
+    if (data){
+      setNotes(currentNotes => {
+        return currentNotes.map(note => {
+          if (note.id === data.id) {
+            return { ...note, pinned: !note.pinned };
+          }
+          return note;
+        })});
+    }
+  }, [data])
   
-  const cardClasses = `bg-white w-[300px] min-h-[250px] max-h-[400px] pb-3 pt-2 hover:shadow-lg border p-3 rounded-md border-t-${parseColor(note.color)} border-t-thin`
-  const listClasses = `bg-white w-[70%] min-h-[200px] max-h-[400px] mx-auto border rounded-md p-4 hover:shadow-lg border-l-thin cursor-pointer`
-
   return (
     <>
       <div 
-      className={`flex flex-col px-5 justify-between text-start z-10 ${isCard ? cardClasses : listClasses}`} 
+      className={`flex flex-col px-5 justify-between text-start z-10 ${isCard ? cardStyles : listStyles}`} 
       onMouseEnter={() => setIsHover(true)}
       onMouseLeave={() => setIsHover(false)}
-      onClick={openNoteDialog}>
       
-        <div className="">
-          <div className={`flex justify-between items-center border-t-${parseColor(note.color)}}`}>
+      style={{borderTop: `2px solid ${note.color}`}}>
+      
+        <div>
+          <div className={`flex justify-between items-center border-t-${parseColor(note.color)}`}>
             <p className="font-semibold text-md">{note.title}</p>
-            {/* {isHover && (
-            note.isPinned 
-            ? <Pin {...pinStyle} onClick={() => togglePin(note.id)}/>
-            : <PinOff {...pinStyle} onClick={() => togglePin(note.id)}/>
+            {isHover && (
+            note.pinned 
+            ? isMutating ? <LoaderCircle {...spinnerProps} className="animate-spin" /> : <Pin {...pinStyle} onClick={() => togglePinTrigger(note.id)}/>
+            : isMutating ? <LoaderCircle {...spinnerProps} className="animate-spin" /> : <PinOff {...pinStyle} onClick={() => togglePinTrigger(note.id)}/>
             )
-            } */}
+            }
           </div>
           <p className="text-xs">{note.description}</p>
         </div>
 
-        {isHover && (<NoteActions note={note} setIsDeleting={setIsDeleting} deleteNote={deleteNote} togglePin={togglePin} />)}
+        {isHover && (<NoteActions note={note} />)}
       </div>
      
       <NoteDialog
         isOpen={isAlertDialogOpen}
+        onAction={() => null}
         onOpenChange={setIsAlertDialogOpen}
-        onAction={showNoteDetails}
         onCancel={closeNoteDialog}
         note={note}
       />

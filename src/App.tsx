@@ -1,43 +1,26 @@
 import "./App.css";
 import Header from "./components/Header";
-import { useEffect, useReducer, useState } from "react";
-import { INote } from "./interface/notes_interface";
+import {  useEffect, useReducer } from "react";
 import { ROUTES } from "./const/routes";
-import { DELETE_RESPONSE, TOGGLE_RESPONSE } from "./const/enums";
-import { useToast } from "@/components/ui/use-toast";
 import { Toaster } from "./components/ui/toaster";
 import { NoteContent } from "./components/NoteContent";
 import Loading from "./components/Loading";
 import { useNotes } from "./components/NoteContext";
-const cardClasses = `pb-3 pt-2 p-3 rounded-md flex-wrap gap-4`
-const listClasses = `flex-col rounded-md justify-between gap-2`
+import { useFetcher } from "./hooks/useFetcher";
 
 function App() {
+
+  //SWR hook
+  const { data, isError, isLoading } = useFetcher(ROUTES.GET_ALL)
+  
+  //Layout changing action
   const [layout, toggleLayout] = useReducer(
     (state) => (state === "card" ? "list" : "card"),
     "card",
   );
 
   //Notes Context
-  const [loading, setLoading] = useState<boolean>(false);
-
-  const { toast } = useToast();
-
-  function showToast(noteTitle: string, noteMessage: string) {
-    toast({
-      title: noteTitle,
-      description: noteMessage,
-    });
-  }
-
-  async function deleteNoteResponse(id: string): Promise<string> {
-    const response = await fetch(ROUTES.DELETE + id, {
-      method: "DELETE",
-    });
-    const result = await response.json();
-    console.log(result);
-    return result;
-  }
+  const { notes, setNotes } = useNotes();
 
   useEffect(() => {
     if (data) {
@@ -46,32 +29,10 @@ function App() {
   }, [data]);
 
   if (isLoading) {
-  async function deleteNote(id: string): Promise<void> {
-    const result = await deleteNoteResponse(id);
-    if (result == DELETE_RESPONSE.DELETED) {
-      {
-        const filteredArray = notes.filter((note) => note.id !== id);
-        setNotes(filteredArray);
-        showToast("Success", "The note was deleted successfully.");
-      }
-    } else
-      showToast("Error deleting note", "There was a problem deleting the note");
-  }
-  
-  async function togglePin(id: string): Promise<void> {
-    const result = await deleteNoteResponse(id);
-    if (result == TOGGLE_RESPONSE.PINNED || TOGGLE_RESPONSE.UNPINNED) {
-      {
-        
-        showToast("Success", "The note was deleted successfully.");
-      }
-    } else
-      showToast("Error", "There was a problem with the action.");
-  }
-
-  if (loading) {
     return <Loading />; 
   }
+
+  if (isError) return <div>Failed to load</div>
 
   return (
     <>
@@ -80,20 +41,20 @@ function App() {
         toggleLayout={toggleLayout}
         layout={layout}
       />
-      
       <div
-        // className={`flex justify-around items-center ${layout === "list" ? listClasses : cardClasses}`} 
-        className={`flex justify-evenly gap-2 ${layout === "list" ? "flex-col" : ""}`}
+         className={`flex ${layout === "list" ? "flex-col items-start" : "justify-center"} gap-2 flex-wrap`}
       >
-        {notes.map((note) => (
+        {
+        (notes.length === 0) 
+        ? <div className="text-gray-500 text-xs pt-4">Click on the button to create your first note</div>
+        : (notes.map((note) => (
           <NoteContent
             key={note.id}
             note={note}
-            deleteNote={deleteNote}
-            togglePin={togglePin}
             isCard={layout=='card' ? true : false}
           />
-        ))}
+        )))
+        }
       </div>
       <Toaster />
     </>

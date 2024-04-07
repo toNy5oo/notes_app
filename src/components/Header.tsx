@@ -1,63 +1,65 @@
-import { INote, INotes } from "@/interface/notes_interface";
+import { INote } from "@/interface/notes_interface";
 import { NoteForm } from "./NoteFormDialog";
-import { LAYOUT } from "@/const/enums";
 import { Button } from "./ui/button";
 import { CardIcon, ListIcon } from "./ui/icones";
-import { useToast } from "@/components/ui/use-toast";
 import { Toaster } from "./ui/toaster";
 import { ROUTES } from "@/const/routes";
+import useSWRMutation from 'swr/mutation'
+import { showErrorToast, showNoteCreatedToast } from "@/service/Notifications";
+import { useEffect } from "react";
+import { LoadingOverlay } from "./LoadingOverlay";
 import { useNotes } from "./NoteContext";
 
 interface Props {
   setNotes: React.Dispatch<React.SetStateAction<INote[]>>;
   toggleLayout: () => void;
-  toggleLayout: React.Dispatch<LAYOUT>;
   layout: string;
+}
+
+async function createNote(url: string, { arg }: { arg: INote}) {
+  
+  const newId = Math.random().toString();
+  arg = { ...arg, id: newId };
+  return fetch(url, {
+    method: 'POST',
+    body: JSON.stringify(arg),
+    headers: {
+      "Content-Type": "application/json",
+    },
+  }).then(res => res.json())
 }
 
 export default function Header({
   toggleLayout,
   layout,
 }: Props) {
-  async function createNote(note: INote): Promise<INote> {
-    const response = await fetch(ROUTES.CREATE, {
-      method: "POST",
+  const {
+     trigger: createNoteTrigger, data, isMutating } = useSWRMutation(ROUTES.CREATE, createNote, /* options */)
+
      const { setNotes } = useNotes();
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(note),
-    });
-    const result = await response.json();
-    console.log(result);
-    return result;
-  }
 
-  const { toast } = useToast();
+  useEffect(() => {
+    if (data) { 
+      setNotes(prevNotes => [...prevNotes, data]);
+      showNoteCreatedToast(data.title);
+    }
+  }, [data]);
 
-  //TODO: Improve performance and clean up
   async function createNewNote(newNote: INote) {
-    const newId = Math.random().toString();
-    newNote = { ...newNote, id: newId };
-    const result = await createNote(newNote);
-
-    if (result) {
-      setNotes([...notes, newNote]);
-      showToast(newNote.title);
+    try {
+      await createNoteTrigger(newNote);
+    } catch (error: any) {
+      console.error("Error creating new note:", error);
+      showErrorToast(error.message);
     }
   }
 
-  function showToast(noteTitle: string) {
-    toast({
-      title: "Created",
-      description: "Your new note " + noteTitle + " has been added.",
-    });
-  }
-
-  return (
+    return (
     <>
+    {isMutating && <LoadingOverlay />}
       <div className="flex justify-between mb-4 p-4 border-b-2">
         <NoteForm createNewNote={createNewNote} />
-        <Button variant="outline" size="icon" onClick={(e) => toggleLayout(e)}>
+        <Button variant="outline" size="icon" onClick={() => toggleLayout()}>
           {layout === "card" ? (
             <ListIcon className="h-4 w-4" />
           ) : (

@@ -1,41 +1,94 @@
 import { colors } from '@/const/colorpicker_colors';
+import { ROUTES } from '@/const/routes';
+import { iconProps } from '@/const/styles';
 import { INote } from '@/interface/notes_interface';
-import { Palette, Pin, Trash2 } from 'lucide-react';
+import {  showNoteDeletedToast } from '@/service/Notifications';
+import { LoaderCircle, Palette, Trash2 } from 'lucide-react';
+import { useEffect, useState } from 'react';
 import { CirclePicker } from 'react-color';
+import useSWRMutation from 'swr/mutation';
+import { useNotes } from './NoteContext';
 
 
 interface NoteActionsProps{
     note: INote,
-    setIsDeleting:  React.Dispatch<React.SetStateAction<boolean>>,
-    deleteNote: (noteId: string) => void;
-  togglePin: (noteId: string) => void;
-}
-const iconProps = {
-    color: 'grey',
-    size: 20
 }
 
 const iconClasses = "cursor-pointer";
 
-function changeColor(color: string) {
-    //TODO: Call uri/note/update to change color
-    console.log(color)
+async function deleteNote(url: string, { arg }: { arg: string }) {
+  return fetch(url+arg, {
+    method: 'DELETE',
+  }).then(res => res.json())
 }
 
-export default function NoteActions({note, togglePin, deleteNote, setIsDeleting}: NoteActionsProps) {
+async function changeColor(url: string, { arg }: { arg: INote}) {
+  return fetch(url, {
+    method: 'PUT',
+    body: JSON.stringify(arg),
+    headers: {
+      "Content-Type": "application/json",
+    },
+  }).then(res => res.json())
+}
+
+export function NoteActions({note}: NoteActionsProps) {
+
+  const {notes, setNotes } = useNotes()
+
+  const {
+    trigger: deleteTrigger, data: deleteData, isMutating: isDeleting } = useSWRMutation(ROUTES.DELETE, deleteNote, /* options */)
+  const {
+    trigger: changeColorTrigger, data: noteUpdated, isMutating: isChangingColor } = useSWRMutation(ROUTES.UPDATE_NOTE, changeColor, /* options */)
+
+  useEffect(() => {
+    if (deleteData) {
+      const filteredArray = notes.filter((note) => note.id !== deleteData.id);
+        setNotes(filteredArray);
+        showNoteDeletedToast(deleteData.title);
+    }
+
+    if (noteUpdated) {
+      setNotes(currentNotes => {
+        return currentNotes.map(note => {
+          if (note.id === noteUpdated.id) {
+            return { ...note, color: noteUpdated.color };
+          }
+          return note;
+        })});
+    }
+  }, [deleteData, noteUpdated]);
+
+  const [showPicker, setShowPicker] = useState(false);
+
   return (
     <div className='flex justify-around w-full animate-slideAndFadeFromBottom'>
-          <Palette {...iconProps} className={`${iconClasses}`} onClick={(e) => {
-          e.stopPropagation();
-          <CirclePicker colors={colors} color={note.color} onChangeComplete={(color) => changeColor(color.hex)} />
+      
+      {isChangingColor 
+          ? <LoaderCircle className="animate-spin" {...iconProps}/> 
+          : <Palette {...iconProps} className={`${iconClasses}`} onClick={(e) => {
+          setShowPicker(!showPicker);
           }}
-          />
-          <Trash2 {...iconProps} className={`${iconClasses} hover:text-red-600`}  onClick={(e) => {
-                    setIsDeleting(true);
-                    deleteNote(note.id);
-                    setIsDeleting(false);
+          />}
+          {showPicker && (
+           <div className="relative left-5 z-10"> 
+           <CirclePicker
+           circleSize={18} 
+           colors={colors.filter((color) => color !== note.color)} 
+           color={note.color} 
+           onChangeComplete={(color) => {
+            note = {...note, color: color.hex}
+            changeColorTrigger(note) 
+            }}
+         />
+         </div>
+          )}
+          {isDeleting 
+          ? <LoaderCircle className="animate-spin" {...iconProps}/> 
+          : <Trash2 {...iconProps} className={`${iconClasses} hover:text-red-600`}  onClick={(e) => {
+                    deleteTrigger(note.id)
                   }}
-          />
+                  />}
   </div>
   )
 }
