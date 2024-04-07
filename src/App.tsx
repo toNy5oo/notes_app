@@ -8,7 +8,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { Toaster } from "./components/ui/toaster";
 import { NoteContent } from "./components/NoteContent";
 import Loading from "./components/Loading";
-
+import { useNotes } from "./components/NoteContext";
 const cardClasses = `pb-3 pt-2 p-3 rounded-md flex-wrap gap-4`
 const listClasses = `flex-col rounded-md justify-between gap-2`
 
@@ -18,7 +18,7 @@ function App() {
     "card",
   );
 
-  const [notes, setNotes] = useState<INote[]>([]);
+  //Notes Context
   const [loading, setLoading] = useState<boolean>(false);
 
   const { toast } = useToast();
@@ -40,23 +40,12 @@ function App() {
   }
 
   useEffect(() => {
-    const fetchNotes = async () => {
-      setLoading(true);
-      try {
-        // Fetch data from your API
-        const response = await fetch(ROUTES.GET_ALL);
-        const notes = await response.json();
-        setNotes(notes);
-        setLoading(false); // Set loading to false upon successful fetch
-      } catch (error) {
-        console.error("Failed to fetch notes:", error);
-        setLoading(false);
-      }
-    };
+    if (data) {
+      setNotes(data);
+    }
+  }, [data]);
 
-    fetchNotes();
-  }, []);
-
+  if (isLoading) {
   async function deleteNote(id: string): Promise<void> {
     const result = await deleteNoteResponse(id);
     if (result == DELETE_RESPONSE.DELETED) {
@@ -87,7 +76,6 @@ function App() {
   return (
     <>
       <Header
-        notes={notes}
         setNotes={setNotes}
         toggleLayout={toggleLayout}
         layout={layout}

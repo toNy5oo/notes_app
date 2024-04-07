@@ -6,24 +6,23 @@ import { CardIcon, ListIcon } from "./ui/icones";
 import { useToast } from "@/components/ui/use-toast";
 import { Toaster } from "./ui/toaster";
 import { ROUTES } from "@/const/routes";
+import { useNotes } from "./NoteContext";
 
 interface Props {
-  notes: INotes;
-  setNotes: React.Dispatch<React.SetStateAction<INotes>>;
+  setNotes: React.Dispatch<React.SetStateAction<INote[]>>;
+  toggleLayout: () => void;
   toggleLayout: React.Dispatch<LAYOUT>;
   layout: string;
 }
 
 export default function Header({
-  notes,
-  setNotes,
   toggleLayout,
   layout,
 }: Props) {
   async function createNote(note: INote): Promise<INote> {
     const response = await fetch(ROUTES.CREATE, {
       method: "POST",
-      headers: {
+     const { setNotes } = useNotes();
         "Content-Type": "application/json",
       },
       body: JSON.stringify(note),

@@ -5,6 +5,7 @@ import { useState } from "react";
 import NoteActions from "./NoteActions";
 import { Pin, PinOff } from "lucide-react";
 import { pinStyle } from "@/const/styles";
+import { useNotes } from "./NoteContext";
 
 interface Props {
   note: INote;
@@ -14,6 +15,7 @@ interface Props {
 }
 
 export function NoteContent({ note, isCard = false, deleteNote, togglePin }: Props) {
+  const { setNotes } = useNotes()
   const [isHover, setIsHover] = useState(false);
   const [isAlertDialogOpen, setIsAlertDialogOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
