@@ -3,7 +3,7 @@ export interface INote {
   title: string;
   description: string;
   color: string;
-  isPinned: boolean;
+  pinned: boolean;
   createdAt: string;
 }
 
