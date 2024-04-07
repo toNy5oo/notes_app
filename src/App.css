@@ -1,25 +1,54 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+body {
+  background-color: whitesmoke;
 }
 
-.card {
-  padding: 2em;
+@keyframes slidein {
+  from {
+    transform: translateX(-80%);
+  }
+  to {
+    transform: translateX(0);
+  }
 }
 
-.fade-enter {
-  opacity: 0.01;
+@keyframes fadein {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
-.fade-enter-active {
-  opacity: 1;
-  transition: opacity 300ms ease-in;
+
+@keyframes slideAndFadeFromLeft {
+  from {
+    transform: translateX(-5px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0px);
+    opacity: 1;
+  }
 }
-.fade-exit {
-  opacity: 1;
+
+@keyframes slideAndFadeFromTop {
+  from {
+    transform: translateY(-5px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0px);
+    opacity: 1;
+  }
 }
-.fade-exit-active {
-  opacity: 0.01;
-  transition: opacity 300ms ease-in;
+
+@keyframes slideAndFadeFromBottom {
+  from {
+    transform: translateY(5px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0px);
+    opacity: 1;
+  }
 }

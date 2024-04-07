@@ -1,33 +1,64 @@
-import './App.css'
-import Header from './components/Header'
-import Note from './components/Note'
-import { useReducer, useState } from 'react'
-import { notes_array } from './const/notes_array'
-import { INote } from './interface/notes_interface'
+import "./App.css";
+import Header from "./components/Header";
+import {  useEffect, useReducer } from "react";
+import { ROUTES } from "./const/routes";
+import { Toaster } from "./components/ui/toaster";
+import { NoteContent } from "./components/NoteContent";
+import Loading from "./components/Loading";
+import { useNotes } from "./components/NoteContext";
+import { useFetcher } from "./hooks/useFetcher";
 
 function App() {
 
-  const [layout, toggleLayout] = useReducer((state) => state === 'card' ? 'list' : 'card', 'card');
+  //SWR hook
+  const { data, isError, isLoading } = useFetcher(ROUTES.GET_ALL)
   
-  const [notes, setNotes] = useState<INote[]>(notes_array);
-  
-  function deleteNote(id: string): void {
-    const filteredArray = notes.filter((note) => (note.id!== id));
-    setNotes(filteredArray);
+  //Layout changing action
+  const [layout, toggleLayout] = useReducer(
+    (state) => (state === "card" ? "list" : "card"),
+    "card",
+  );
+
+  //Notes Context
+  const { notes, setNotes } = useNotes();
+
+  useEffect(() => {
+    if (data) {
+      setNotes(data);
+    }
+  }, [data]);
+
+  if (isLoading) {
+    return <Loading />; 
   }
-  
+
+  if (isError) return <div>Failed to load</div>
+
   return (
     <>
-      <Header notes={notes} setNotes={setNotes} toggleLayout={toggleLayout} layout={layout}/>
-      <div className={`flex gap-4 flex-wrap justify-evenly ${layout === "list" && "flex-col" }`}>
+      <Header
+        setNotes={setNotes}
+        toggleLayout={toggleLayout}
+        layout={layout}
+      />
+      <div
+         className={`flex ${layout === "list" ? "flex-col items-start" : "justify-center"} gap-2 flex-wrap`}
+      >
         {
-          notes.map(note => (
-            <Note key={note.id} note={note} deleteNote={deleteNote} layout={layout}/>
-          ))
+        (notes.length === 0) 
+        ? <div className="text-gray-500 text-xs pt-4">Click on the button to create your first note</div>
+        : (notes.map((note) => (
+          <NoteContent
+            key={note.id}
+            note={note}
+            isCard={layout=='card' ? true : false}
+          />
+        )))
         }
       </div>
+      <Toaster />
     </>
-  )
+  );
 }
 
-export default App
+export default App;
