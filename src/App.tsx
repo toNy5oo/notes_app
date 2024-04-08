@@ -35,14 +35,14 @@ function App() {
   if (isError) return <div>Failed to load</div>
 
   return (
-    <>
+    <div className="w-[80%] mx-auto">
       <Header
         setNotes={setNotes}
         toggleLayout={toggleLayout}
         layout={layout}
       />
       <div
-         className={`flex ${layout === "list" ? "flex-col items-start" : "justify-center"} gap-2 flex-wrap`}
+         className={`${layout === "list" ? "flex flex-col items-start" : "grid place-items-stretch sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"} gap-2 flex-wrap`}
       >
         {
         (notes.length === 0) 
@@ -57,7 +57,7 @@ function App() {
         }
       </div>
       <Toaster />
-    </>
+    </div>
   );
 }
 
