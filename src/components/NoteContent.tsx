@@ -59,7 +59,7 @@ export function NoteContent({  note, isCard = false }: Props) {
       onMouseEnter={() => setIsHover(true)}
       onMouseLeave={() => setIsHover(false)}
       
-      style={{borderTop: `2px solid ${note.color}`}}>
+      style={{borderTop: `10px solid ${note.color}`,}}>
       
         <div>
           <div className={`flex justify-between items-center border-t-${parseColor(note.color)}`}>
