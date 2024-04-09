@@ -1,4 +1,3 @@
-import { parseColor } from "@/const/colorpicker_colors";
 import { INote } from "@/interface/notes_interface";
 import { NoteDialog } from "./NoteDialog";
 import { useEffect, useState } from "react";
@@ -62,7 +61,7 @@ export function NoteContent({  note, isCard = false }: Props) {
       style={{borderTop: `10px solid ${note.color}`,}}>
       
         <div>
-          <div className={`flex justify-between items-center border-t-${parseColor(note.color)}`}>
+          <div className={`flex justify-between items-center`}>
             <p className="font-semibold text-md">{note.title}</p>
             {isHover && (
             note.pinned 
