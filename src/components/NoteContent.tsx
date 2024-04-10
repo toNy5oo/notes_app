@@ -3,7 +3,7 @@ import { NoteDialog } from "./NoteDialog";
 import { useEffect, useState } from "react";
 import { NoteActions } from "./NoteActions";
 import { LoaderCircle, Pin, PinOff } from "lucide-react";
-import { cardStyles, listStyles, pinStyle, spinnerProps } from "@/const/styles";
+import NotePin from "./Pin";
 import useSWRMutation from "swr/mutation";
 import { ROUTES } from "@/const/routes";
 import { useNotes } from "./NoteContext";
@@ -63,7 +63,7 @@ export function NoteContent({  note, isCard = false }: Props) {
         <div>
           <div className={`flex justify-between items-center`}>
             <p className="font-semibold text-md">{note.title}</p>
-            {isHover && (
+            <NotePin isHover={isHover} note={note} />
             note.pinned 
             ? isMutating ? <LoaderCircle {...spinnerProps} className="animate-spin" /> : <Pin {...pinStyle} onClick={() => togglePinTrigger(note.id)}/>
             : isMutating ? <LoaderCircle {...spinnerProps} className="animate-spin" /> : <PinOff {...pinStyle} onClick={() => togglePinTrigger(note.id)}/>
