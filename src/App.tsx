@@ -10,48 +10,39 @@ import { useFetcher } from "./hooks/useFetcher";
 import { gridContainerStyle, listContainerStyle } from "./const/styles";
 
 function App() {
-
-  //SWR hook
-  const { data, isError, isLoading } = useFetcher(ROUTES.GET_ALL)
-  
-  //Layout changing action
   const [layout, toggleLayout] = useReducer(
     (state) => (state === "card" ? "list" : "card"),
     "card",
   );
 
-  //Notes Context
   const { notes, setNotes } = useNotes();
+  const { data, isError, isLoading } = useFetcher(ROUTES.GET_ALL);
 
   useEffect(() => {
-    if (data) {
-      setNotes(data);
-    }
-  }, [data]);
+    if (data) setNotes(data);
+  }, [data, setNotes]);
 
-  if (isLoading) {
-    return <Loading />; 
-  }
+  if (isLoading) return <Loading />;
+  if (isError) return <div>Failed to load</div>;
 
-  if (isError) return <div>Failed to load</div>
+  const containerClass = `${layout === "list" ? listContainerStyle : gridContainerStyle}`;
 
   return (
     <div className="w-[80%] mx-auto">
-    <Header setNotes={setNotes} toggleLayout={toggleLayout} layout={layout} />
-
-    {notes.length === 0 ? (
-      <div className="text-gray-500 text-xs pt-4">Click on the button to create your first note</div>
-    ) : (
-      <div className={`${layout === "list" ? listContainerStyle : gridContainerStyle}`}>
-        {notes.map(note => (
-          <NoteContent key={note.id} note={note} />
-        ))}
-      </div>
-    )}
-
-    <Toaster />
-  </div>
-)}
+      <Header setNotes={setNotes} toggleLayout={toggleLayout} layout={layout} />
+      {notes.length === 0 ? (
+        <p className="text-gray-500 text-xs pt-4">Click to create your first note</p>
+      ) : (
+        <div className={containerClass}>
+          {notes.map((note) => (
+            <NoteContent key={note.id} note={note} />
+          ))}
+        </div>
+      )}
+      <Toaster />
+    </div>
+  );
+}
 
 
 export default App;
