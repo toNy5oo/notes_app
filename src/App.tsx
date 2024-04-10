@@ -1,12 +1,13 @@
 import "./App.css";
 import Header from "./components/Header";
-import {  useEffect, useReducer } from "react";
+import { useEffect, useReducer } from "react";
 import { ROUTES } from "./const/routes";
 import { Toaster } from "./components/ui/toaster";
 import { NoteContent } from "./components/NoteContent";
 import Loading from "./components/Loading";
 import { useNotes } from "./components/NoteContext";
 import { useFetcher } from "./hooks/useFetcher";
+import { gridContainerStyle, listContainerStyle } from "./const/styles";
 
 function App() {
 
@@ -36,29 +37,21 @@ function App() {
 
   return (
     <div className="w-[80%] mx-auto">
-      <Header
-        setNotes={setNotes}
-        toggleLayout={toggleLayout}
-        layout={layout}
-      />
-      <div
-         className={`${layout === "list" ? "flex flex-col items-start" : "grid place-items-stretch sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"} gap-2 flex-wrap`}
-      >
-        {
-        (notes.length === 0) 
-        ? <div className="text-gray-500 text-xs pt-4">Click on the button to create your first note</div>
-        : (notes.map((note) => (
-          <NoteContent
-            key={note.id}
-            note={note}
-            isCard={layout=='card' ? true : false}
-          />
-        )))
-        }
+    <Header setNotes={setNotes} toggleLayout={toggleLayout} layout={layout} />
+
+    {notes.length === 0 ? (
+      <div className="text-gray-500 text-xs pt-4">Click on the button to create your first note</div>
+    ) : (
+      <div className={`${layout === "list" ? listContainerStyle : gridContainerStyle}`}>
+        {notes.map(note => (
+          <NoteContent key={note.id} note={note} />
+        ))}
       </div>
-      <Toaster />
-    </div>
-  );
-}
+    )}
+
+    <Toaster />
+  </div>
+)}
+
 
 export default App;

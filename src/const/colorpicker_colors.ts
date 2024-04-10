@@ -1,9 +1,9 @@
 export const enum noteColors {
-  RED = "#f47373",
-  GREEN = "#37d67a",
-  BLUE = "#2ccce4",
-  YELLOW = "#ccc20c",
-  ORANGE = "#ff8a65",
+  RED = "#fcb3b3",
+  GREEN = "#a3e8c0",
+  BLUE = "#a0e9f4",
+  YELLOW = "#f3ed7d",
+  ORANGE = "#ffc38d",
   GREY = "#e3e3e3",
 }
 
