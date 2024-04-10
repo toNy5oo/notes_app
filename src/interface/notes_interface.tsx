@@ -4,7 +4,8 @@ export interface INote {
   description: string;
   color: string;
   pinned: boolean;
-  createdAt: string;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface INotes {
