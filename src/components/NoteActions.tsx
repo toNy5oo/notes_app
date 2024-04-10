@@ -14,8 +14,6 @@ interface NoteActionsProps{
     note: INote,
 }
 
-const iconClasses = "cursor-pointer";
-
 async function deleteNote(url: string, { arg }: { arg: string }) {
   return fetch(url+arg, {
     method: 'DELETE',
@@ -32,63 +30,62 @@ async function changeColor(url: string, { arg }: { arg: INote}) {
   }).then(res => res.json())
 }
 
-export function NoteActions({note}: NoteActionsProps) {
-
-  const {notes, setNotes } = useNotes()
-
-  const {
-    trigger: deleteTrigger, data: deleteData, isMutating: isDeleting } = useSWRMutation(ROUTES.DELETE, deleteNote, /* options */)
-  const {
-    trigger: changeColorTrigger, data: noteUpdated, isMutating: isChangingColor } = useSWRMutation(ROUTES.UPDATE_NOTE, changeColor, /* options */)
+export function NoteActions({ note }: NoteActionsProps) {
+  const { setNotes } = useNotes();
+  const { trigger: deleteNoteTrigger, data: deleteNoteData, isMutating: isDeleting }= useSWRMutation(ROUTES.DELETE, deleteNote);
+  const { trigger: updateNoteTrigger, data: updateNoteData, isMutating: isChangingColor }= useSWRMutation(ROUTES.UPDATE_NOTE, changeColor);
 
   useEffect(() => {
-    if (deleteData) {
-      const filteredArray = notes.filter((note) => note.id !== deleteData.id);
-        setNotes(filteredArray);
-        showNoteDeletedToast(deleteData.title);
+    if (updateNoteData) {
+      setNotes((prev) =>
+        prev.map((prevNote) =>
+          prevNote.id === updateNoteData.id
+            ? updateNoteData
+            : prevNote
+        )
+      );
     }
 
-    if (noteUpdated) {
-      setNotes(currentNotes => {
-        return currentNotes.map(note => {
-          if (note.id === noteUpdated.id) {
-            return { ...note, color: noteUpdated.color };
-          }
-          return note;
-        })});
+    if (deleteNoteData) {
+      setNotes((prev) => prev.filter((prevNote) => prevNote.id !== deleteNoteData.id))
+      showNoteDeletedToast(deleteNoteData)
     }
-  }, [deleteData, noteUpdated]);
+  }, [updateNoteData, deleteNoteData]);
 
-  const [showPicker, setShowPicker] = useState(false);
+  const [showColorPicker, toggleColorPicker] = useState(false);
+
+  const handleColorChange = (color: any) => {
+    updateNoteTrigger({ ...note, color: color.hex });
+  };
 
   return (
-    <div className='flex justify-around w-full animate-slideAndFadeFromBottom'>
-      
-      {isChangingColor 
-          ? <LoaderCircle className="animate-spin" {...iconProps}/> 
-          : <Palette {...iconProps} className={`${iconClasses}`} onClick={(e) => {
-          setShowPicker(!showPicker);
+    <div className="absolute bottom-0 left-0 right-0 bg-opacity-80 bg-white z-10 flex justify-around p-2 animate-slideAndFadeFromBottom">
+      {showColorPicker ? (
+        <CirclePicker
+          circleSize={18}
+          colors={colors.filter((c) => c !== note.color)}
+          color={note.color}
+          onChangeComplete={handleColorChange}
+          onChange={() => {
+            toggleColorPicker(!showColorPicker)
+            handleColorChange
           }}
-          />}
-          {showPicker && (
-           <div className="relative left-5 z-10"> 
-           <CirclePicker
-           circleSize={18} 
-           colors={colors.filter((color) => color !== note.color)} 
-           color={note.color} 
-           onChangeComplete={(color) => {
-            note = {...note, color: color.hex}
-            changeColorTrigger(note) 
-            }}
-         />
-         </div>
+        />
+      ) : (
+        <div className="flex justify-around w-full">
+          {isChangingColor ? (
+            <LoaderCircle {...iconProps} className="animate-spin" onClick={() => toggleColorPicker(!showColorPicker)} />
+          ) : (
+            <Palette {...iconProps} onClick={() => toggleColorPicker(!showColorPicker)} />
           )}
-          {isDeleting 
-          ? <LoaderCircle className="animate-spin" {...iconProps}/> 
-          : <Trash2 {...iconProps} className={`${iconClasses} hover:text-red-600`}  onClick={(e) => {
-                    deleteTrigger(note.id)
-                  }}
-                  />}
-  </div>
-  )
+          {isDeleting ? (
+            <LoaderCircle {...iconProps} className="animate-spin" onClick={() => deleteNoteTrigger(note.id)} />
+          ) : (
+            <Trash2 {...iconProps} onClick={() => deleteNoteTrigger(note.id)} />
+          )}
+        </div>
+      )}
+    </div>
+  );
 }
+
