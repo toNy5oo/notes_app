@@ -11,7 +11,7 @@ import { LoadingOverlay } from "./LoadingOverlay";
 import { useNotes } from "./NoteContext";
 
 interface Props {
-  setNotes: React.Dispatch<React.SetStateAction<INote[]>>;
+  setNotes: React.Dispatch<React.SetStateAction<{pinned: INote[], others: INote[]}>>;
   toggleLayout: () => void;
   layout: string;
 }
@@ -40,7 +40,7 @@ export default function Header({
 
   useEffect(() => {
     if (data) { 
-      setNotes(prevNotes => [...prevNotes, data]);
+      setNotes(prevNotes => ({ pinned: [...prevNotes.pinned], others: [...prevNotes.others, data] }));
       showNoteCreatedToast(data.title);
     }
   }, [data]);

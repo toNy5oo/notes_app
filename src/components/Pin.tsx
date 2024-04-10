@@ -20,26 +20,38 @@ async function togglePin(url: string, { arg }: { arg: string}) {
       },
     }).then(res => res.json())
   }
-
   
 export default function NotePin({isHover, note}: PinProps) {
     const {
         trigger: togglePinTrigger, data, isMutating  } = useSWRMutation(ROUTES.TOGGLE_PIN, togglePin, /* options */)
-    
 
     const { setNotes } = useNotes()
 
     useEffect(() => {
-        if (data){
-          setNotes(currentNotes => {
-            return currentNotes.map(note => {
-              if (note.id === data.id) {
-                return { ...note, pinned: !note.pinned };
-              }
-              return note;
-            })});
-        }
-      }, [data])
+      if (data) {
+        setNotes(currentNotes => {
+          // Determine where the note belongs and where it should be removed from.
+          const targetArray = data.pinned ? 'pinned' : 'others';
+          const sourceArray = data.pinned ? 'others' : 'pinned';
+    
+          // Only filter the source array where the note is to be removed.
+          const filteredSourceArray = currentNotes[sourceArray].filter(note => note.id !== data.id);
+    
+          // Add the note to the target array if it's not already present.
+          const updatedTargetArray = currentNotes[targetArray].some(note => note.id === data.id)
+            ? [...currentNotes[targetArray]]
+            : [...currentNotes[targetArray], data];
+    
+          // Return the updated notes object with modifications only where necessary.
+          return {
+            ...currentNotes,
+            [sourceArray]: filteredSourceArray,
+            [targetArray]: updatedTargetArray,
+          };
+        });
+      }
+    }, [data]);
+    
 
   return (
     <>

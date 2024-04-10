@@ -2,8 +2,8 @@ import { INote } from "@/interface/notes_interface";
 import { createContext, ReactNode, SetStateAction, useContext, useState } from "react";
 
 interface NoteContextType {
-  notes: INote[]; 
-  setNotes: React.Dispatch<SetStateAction<INote[]>>; 
+  notes: {pinned: INote[], others: INote[]}; 
+  setNotes: React.Dispatch<SetStateAction<{pinned: INote[], others: INote[]}>>; 
 }
 
 // Create the context with a default undefined value
@@ -14,7 +14,7 @@ interface NoteProviderProps {
 }
 
 export const NoteProvider = ({ children }: NoteProviderProps) => {
-  const [notes, setNotes] = useState<INote[]>([]);
+  const [notes, setNotes] = useState<{pinned: INote[], others: INote[]}>({pinned: [], others: []});
 
   return (
     <NoteContext.Provider value={{ notes, setNotes }}>
