@@ -14,7 +14,7 @@ export function NoteContent({ note }: Props) {
   const [isHover, setIsHover] = useState(false);
   const [isAlertDialogOpen, setIsAlertDialogOpen] = useState(false);
 
-  // const openNoteDialog = () => setIsAlertDialogOpen(true);
+  const openNoteDialog = () => setIsAlertDialogOpen(true);
   const closeNoteDialog = () => {
     setIsAlertDialogOpen(false);
     setIsHover(false);
@@ -28,7 +28,7 @@ export function NoteContent({ note }: Props) {
       style={{borderTop: `10px solid ${note.color}`}}
       className={`${noteStyle} relative`}>
       
-        <div>
+        <div onClick={openNoteDialog}>
           <div className={`flex justify-between items-center`}>
             <p className="font-semibold text-md">{note.title}</p>
             <NotePin isHover={isHover} note={note} />
