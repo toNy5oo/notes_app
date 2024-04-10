@@ -1,47 +1,58 @@
-import { INote } from "@/interface/notes_interface";
-import { NoteDialog } from "./NoteDialog";
 import { useState } from "react";
+import { INote } from "@/interface/notes_interface"; // Interfaces
+import NotePin from "./Pin"; // Sub-components
+import { NoteDialog } from "./NoteDialog";
 import { NoteActions } from "./NoteActions";
-import { noteStyle} from "@/const/styles";
-import NotePin from "./Pin";
+import { noteStyle } from "@/const/styles"; // Styles
 
 interface Props {
   note: INote;
 }
 
+/**
+ * NoteContent displays the content of a note including its title, description, and actions.
+ * It supports hovering states and actions like pinning or opening a dialog for more details.
+ */
 export function NoteContent({ note }: Props) {
-
+  // State to manage hover effect and dialog visibility
   const [isHover, setIsHover] = useState(false);
   const [isAlertDialogOpen, setIsAlertDialogOpen] = useState(false);
 
+  // Handles the opening of the note's detailed view dialog
   const openNoteDialog = () => setIsAlertDialogOpen(true);
+
+  // Closes the note dialog and resets hover state
   const closeNoteDialog = () => {
     setIsAlertDialogOpen(false);
     setIsHover(false);
   };
-  
+
   return (
     <>
       <div 
-      onMouseEnter={() => setIsHover(true)}
-      onMouseLeave={() => setIsHover(false)}
-      style={{borderTop: `10px solid ${note.color}`}}
-      className={`${noteStyle} relative`}>
-      
+        onMouseEnter={() => setIsHover(true)}
+        onMouseLeave={() => setIsHover(false)}
+        style={{ borderTop: `10px solid ${note.color}` }}
+        className={`${noteStyle} relative`}>
+        
+        {/* Note's main content that triggers dialog on click */}
         <div onClick={openNoteDialog}>
-          <div className={`flex justify-between items-center`}>
+          <div className="flex justify-between items-center">
             <p className="font-semibold text-md">{note.title}</p>
+            {/* Pin icon that appears on hover */}
             <NotePin isHover={isHover} note={note} />
           </div>
           <p className="text-xs">{note.description}</p>
         </div>
 
-        {isHover && (<NoteActions note={note} />)}
+        {/* Actions (like editing color or deleting) that appear on hover */}
+        {isHover && <NoteActions note={note} />}
       </div>
-     
+      
+      {/* Dialog for detailed note view and actions */}
       <NoteDialog
         isOpen={isAlertDialogOpen}
-        onAction={() => null}
+        onAction={() => null} // Placeholder for future implementation
         onOpenChange={setIsAlertDialogOpen}
         onCancel={closeNoteDialog}
         note={note}
