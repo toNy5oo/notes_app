@@ -1,4 +1,4 @@
-import { pinStyle, spinnerProps } from "@/const/styles";
+import { iconProps, pinStyle, spinnerProps } from "@/const/styles";
 import { INote } from "@/interface/notes_interface";
 import { LoaderCircle, Pin, PinOff } from "lucide-react";
 import useSWRMutation from "swr/mutation";
@@ -7,21 +7,10 @@ import { useEffect } from "react";
 import { ROUTES } from "@/const/routes";
 
 interface PinProps {
-    isHover: boolean,
     note: INote
 }
-
-async function togglePin(url: string, { arg }: { arg: string}) {
-    return fetch(url+arg, {
-      method: 'PUT',
-      body: JSON.stringify(arg),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    }).then(res => res.json())
-  }
   
-export default function NotePin({isHover, note}: PinProps) {
+export function PinAction({ note}: PinProps) {
     const {
         trigger: togglePinTrigger, data, isMutating  } = useSWRMutation(ROUTES.TOGGLE_PIN, togglePin, /* options */)
 
@@ -55,17 +44,25 @@ export default function NotePin({isHover, note}: PinProps) {
 
   return (
     <>
-    {
-    isHover && (
+{    
         note.pinned 
         ? isMutating 
                 ?  <LoaderCircle {...spinnerProps} className="animate-spin" /> 
-                :  <Pin {...pinStyle} onClick={() => togglePinTrigger(note.id)}/>
+                :  <Pin {...iconProps} onClick={() => togglePinTrigger(note.id)}/>
         : isMutating 
                 ? <LoaderCircle {...spinnerProps} className="animate-spin" /> 
-                : <PinOff {...pinStyle} onClick={() => togglePinTrigger(note.id)}/>
-        )
-    }  
+                : <PinOff {...iconProps} onClick={() => togglePinTrigger(note.id)}/>
+}
     </>
   )
+}
+
+async function togglePin(url: string, { arg }: { arg: string}) {
+  return fetch(url+arg, {
+    method: 'PUT',
+    body: JSON.stringify(arg),
+    headers: {
+      "Content-Type": "application/json",
+    },
+  }).then(res => res.json())
 }
