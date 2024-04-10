@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { INote } from "@/interface/notes_interface"; // Interfaces
-import NotePin from "./Pin"; // Sub-components
+import NotePin from "./PinAction"; // Sub-components
 import { NoteDialog } from "./NoteDialog";
 import { NoteActions } from "./NoteActions";
 import { noteStyle } from "@/const/styles"; // Styles
@@ -37,11 +37,7 @@ export function NoteContent({ note }: Props) {
         
         {/* Note's main content that triggers dialog on click */}
         <div onClick={openNoteDialog}>
-          <div className="flex justify-between items-center">
             <p className="font-semibold text-md">{note.title}</p>
-            {/* Pin icon that appears on hover */}
-            <NotePin isHover={isHover} note={note} />
-          </div>
           <p className="text-xs">{note.description}</p>
         </div>
 
