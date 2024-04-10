@@ -36,21 +36,30 @@ export function NoteActions({ note }: NoteActionsProps) {
   const { trigger: updateNoteTrigger, data: updateNoteData, isMutating: isChangingColor }= useSWRMutation(ROUTES.UPDATE_NOTE, changeColor);
 
   useEffect(() => {
-    if (updateNoteData) {
-      setNotes((prev) =>
-        prev.map((prevNote) =>
-          prevNote.id === updateNoteData.id
-            ? updateNoteData
-            : prevNote
-        )
-      );
+    // This function will either update or delete a note in the given array.
+    const processNotes = (notesArray: INote[], noteData: INote, isDelete = false) => 
+      notesArray.map(note => note.id === noteData.id ? (isDelete ? null : noteData) : note).filter(note => note !== null);
+  
+    if (updateNoteData || deleteNoteData) {
+      setNotes(prev => {
+        // Determine if this is a delete operation
+        const isDeleteOperation = !!deleteNoteData;
+  
+        // Get the note data; prioritize delete operation if both are somehow provided.
+        const noteData = isDeleteOperation ? deleteNoteData : updateNoteData;
+  
+        return {
+          pinned: processNotes(prev.pinned, noteData, isDeleteOperation),
+          others: processNotes(prev.others, noteData, isDeleteOperation),
+        };
+      });
+  
+      // Show toast message if it's a delete operation
+      if (deleteNoteData) {
+        showNoteDeletedToast(deleteNoteData);
+      }
     }
-
-    if (deleteNoteData) {
-      setNotes((prev) => prev.filter((prevNote) => prevNote.id !== deleteNoteData.id))
-      showNoteDeletedToast(deleteNoteData)
-    }
-  }, [updateNoteData, deleteNoteData]);
+  }, [updateNoteData, deleteNoteData, showNoteDeletedToast]);
 
   const [showColorPicker, toggleColorPicker] = useState(false);
 
