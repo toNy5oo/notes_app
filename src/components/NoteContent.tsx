@@ -16,6 +16,7 @@ export function NoteContent({ note }: Props) {
   // State to manage hover effect and dialog visibility
   const [isHover, setIsHover] = useState(false);
   const [isAlertDialogOpen, setIsAlertDialogOpen] = useState(false);
+
   const date = new Date(note.updatedAt);
 
   // Handles the opening of the note's detailed view dialog
@@ -36,9 +37,9 @@ export function NoteContent({ note }: Props) {
         className={`${noteStyle} relative`}>
         
         {/* Note's main content that triggers dialog on click */}
-        <div onClick={openNoteDialog}>
+        <div onClick={openNoteDialog} className="text-gray-600 flex flex-col gap-y-1.5">
             <p className="font-semibold text-md">{note.title}</p>
-          <p className="text-xs">{note.description}</p>
+            <p className="text-xs">{note.description}</p>
             <p className="text-[9px] text-right mt-2 opacity-50">Last updated: {date.toLocaleString('en-UK')}</p>
         </div>
 
