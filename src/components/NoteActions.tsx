@@ -1,8 +1,8 @@
 import { INote } from '@/interface/notes_interface';
 import { PinAction } from './PinAction';
-import ChangeColorAction from './ChangeColorAction';
-import DeleteNoteAction from './DeleteNoteAction';
 import { useState } from 'react';
+import { ChangeColorAction } from './ChangeColorAction';
+import { DeleteNoteAction } from './DeleteNoteAction';
 
 interface NoteActionsProps{
     note: INote,
