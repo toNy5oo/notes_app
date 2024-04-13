@@ -19,6 +19,8 @@ interface DialogProps {
   note: INote;
 }
 
+
+
 export function NoteDialog({
   isOpen,
   onOpenChange,
@@ -26,6 +28,8 @@ export function NoteDialog({
   onCancel,
   note,
 }: DialogProps) {
+  const date = new Date(note.updatedAt);
+
   return (
     <AlertDialog open={isOpen} onOpenChange={onOpenChange}>
       <AlertDialogContent>
@@ -37,10 +41,14 @@ export function NoteDialog({
             </div>
           </AlertDialogTitle>
 
-          <AlertDialogDescription>{note.description}</AlertDialogDescription>
+          <AlertDialogDescription>
+          <p className="text-xs">{note.description}</p>
+            
+          </AlertDialogDescription>
         </AlertDialogHeader>
-
+        <p className="text-[9px] mt-2 opacity-50">Last updated: {date.toLocaleString('en-UK')}</p>
         <AlertDialogFooter>
+        
           <AlertDialogCancel asChild>
             <Button variant="outline" onClick={onCancel}>
               Cancel
