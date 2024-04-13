@@ -5,16 +5,11 @@ export const pinStyle = {
       }
 
 export const iconProps = {
-        color: 'grey',
+        color: 'white',
         size: 16,
         cursor: 'pointer'
       }
       
-export const spinnerProps = {
-        color: 'black',
-        size: 14
-      }
-
 export const gridContainerStyle = `xs:columns-1 sm:columns-2 md:columns-3 lg:columns-4`; 
 export const listContainerStyle = `flex flex-col xs:w-full sm:w-[75%] md:w-[55%] lg:w-[40%] mx-auto`; 
 
