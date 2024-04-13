@@ -1,5 +1,5 @@
 // Importing React hooks and components
-import { useEffect, useReducer } from "react";
+import { useEffect, useReducer, useState } from "react";
 import { useNotes } from "./components/NoteContext";
 import { useFetcher } from "./hooks/useFetcher";
 
@@ -24,7 +24,7 @@ function App() {
   const [layout, toggleLayout] = useReducer((state) => (state === "card" ? "list" : "card"), "card");
 
   // Custom hook to fetch and manage notes
-  const { notes, setNotes } = useNotes();
+  const { notes, setNotes, filteredNotes, setFilteredNotes } = useNotes();
   const { data, isError, isLoading } = useFetcher(ROUTES.GET_ALL);
 
   // Effect to organize notes into pinned and others upon data fetch
@@ -40,6 +40,7 @@ function App() {
       }, { pinned: [], others: [] });
   
       setNotes(updatedNotes);
+      setFilteredNotes(updatedNotes);
     }
   }, [data, setNotes]);
 
@@ -61,22 +62,27 @@ function App() {
       ) : (
         <div className="flex flex-col">
           {/* Pinned Notes Section */}
-          {notes?.pinned.length > 0 && (
+          {filteredNotes?.pinned.length > 0 && (
             <>
               <SectionTitle text="Pinned" />
               <div className={containerClass}>
-                {notes.pinned.map((note) => <NoteContent key={note.id} note={note} />)}
+                {filteredNotes.pinned.map((note) => <NoteContent key={note.id} note={note} />)}
               </div>
               <Separator className="my-6" />
             </>
           )}
 
           {/* Other Notes Section */}
+          {filteredNotes?.others.length > 0 && (
+            <>
           <SectionTitle text="Others" />
           <div className={containerClass}>
-            {notes.others.map((note) => <NoteContent key={note.id} note={note} />)}
+            {filteredNotes?.others.map((note) => <NoteContent key={note.id} note={note} />)}
           </div>
+          </>
+          )}
         </div>
+
       )}
 
       {/* Toaster for notifications */}
