@@ -11,7 +11,7 @@ interface Props {
     note: INote
 }
   
-export default function DeleteNoteAction({ note}: Props) {
+export function DeleteNoteAction({ note}: Props) {
     const { setNotes } = useNotes();
   const { trigger: deleteNoteTrigger, data: deleteNoteData, isMutating: isDeleting }= useSWRMutation(ROUTES.DELETE, deleteNote);
 

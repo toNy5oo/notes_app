@@ -14,7 +14,7 @@ interface Props {
   showColorPicker: boolean,
 }
 
-export default function ChangeColorAction({ note, onToggle, showColorPicker}: Props) {
+export function ChangeColorAction({ note, onToggle, showColorPicker}: Props) {
     const { setNotes } = useNotes();
     const { trigger: updateNoteTrigger, data: updateNoteData, isMutating: isChangingColor }= useSWRMutation(ROUTES.UPDATE_NOTE, changeColor);
    

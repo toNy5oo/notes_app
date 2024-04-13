@@ -1,4 +1,4 @@
-import { iconProps, pinStyle, spinnerProps } from "@/const/styles";
+import { iconProps} from "@/const/styles";
 import { INote } from "@/interface/notes_interface";
 import { LoaderCircle, Pin, PinOff } from "lucide-react";
 import useSWRMutation from "swr/mutation";
@@ -47,10 +47,10 @@ export function PinAction({ note}: PinProps) {
 {    
         note.pinned 
         ? isMutating 
-                ?  <LoaderCircle {...spinnerProps} className="animate-spin" /> 
+                ?  <LoaderCircle {...iconProps} className="animate-spin" /> 
                 :  <Pin {...iconProps} onClick={() => togglePinTrigger(note.id)}/>
         : isMutating 
-                ? <LoaderCircle {...spinnerProps} className="animate-spin" /> 
+                ? <LoaderCircle {...iconProps} className="animate-spin" /> 
                 : <PinOff {...iconProps} onClick={() => togglePinTrigger(note.id)}/>
 }
     </>
