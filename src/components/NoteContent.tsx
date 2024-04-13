@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { INote } from "@/interface/notes_interface"; // Interfaces
-import NotePin from "./PinAction"; // Sub-components
 import { NoteDialog } from "./NoteDialog";
 import { NoteActions } from "./NoteActions";
 import { noteStyle } from "@/const/styles"; // Styles
