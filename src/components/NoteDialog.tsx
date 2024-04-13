@@ -26,6 +26,7 @@ export function NoteDialog({
   onCancel,
   note,
 }: DialogProps) {
+  const date = new Date(note.updatedAt);
   return (
     <AlertDialog open={isOpen} onOpenChange={onOpenChange}>
       <AlertDialogContent>
@@ -39,7 +40,7 @@ export function NoteDialog({
 
           <AlertDialogDescription>{note.description}</AlertDialogDescription>
         </AlertDialogHeader>
-
+        <p className="text-[9px] mt-2 opacity-50">Last updated: {date.toLocaleString('en-UK')}</p>
         <AlertDialogFooter>
           <AlertDialogCancel asChild>
             <Button variant="outline" onClick={onCancel}>
