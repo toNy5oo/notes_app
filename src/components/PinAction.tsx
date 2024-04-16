@@ -48,10 +48,10 @@ export function PinAction({ note}: PinProps) {
         note.pinned 
         ? isMutating 
                 ?  <LoaderCircle {...iconProps} className="animate-spin" /> 
-                :  <Pin {...iconProps} onClick={() => togglePinTrigger(note.id)}/>
+                :  <PinOff {...iconProps} onClick={() => togglePinTrigger(note.id)}/>
         : isMutating 
                 ? <LoaderCircle {...iconProps} className="animate-spin" /> 
-                : <PinOff {...iconProps} onClick={() => togglePinTrigger(note.id)}/>
+                : <Pin {...iconProps} onClick={() => togglePinTrigger(note.id)}/>
 }
     </>
   )
