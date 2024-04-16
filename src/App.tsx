@@ -1,5 +1,5 @@
 // Importing React hooks and components
-import { useEffect, useReducer, useState } from "react";
+import { useEffect, useReducer} from "react";
 import { useNotes } from "./components/NoteContext";
 import { useFetcher } from "./hooks/useFetcher";
 
@@ -32,9 +32,9 @@ function App() {
     if (data) {
       const updatedNotes = data.reduce((noteObj: { pinned: INote[]; others: INote[] }, data: INote) => {
         if (data.pinned) {
-          noteObj.pinned.push(data); // If note is pinned, add it to the pinned array
+          noteObj.pinned.push(data); 
         } else {
-          noteObj.others.push(data); // Otherwise, add it to the others array
+          noteObj.others.push(data); 
         }
         return noteObj;
       }, { pinned: [], others: [] });
@@ -60,7 +60,7 @@ function App() {
       {(!notes?.pinned.length && !notes?.others.length) ? (
         <p className="text-gray-500 text-xs pt-4">Click to create your first note</p>
       ) : (
-        <div className="flex flex-col">
+        <div className="flex flex-col items-start">
           {/* Pinned Notes Section */}
           {filteredNotes?.pinned.length > 0 && (
             <>
